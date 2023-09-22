@@ -1,0 +1,86 @@
+version: '3.8'
+
+networks:
+  sala:
+    driver: bridge
+
+volumes:
+  bundle:
+    driver: local
+  storage-data:
+    driver: local
+  redis-data:
+    driver: local
+  redis-cache-data:
+    driver: local
+
+services:
+  proxy:
+    container_name: sala-proxy
+    image: nginx:stable-alpine3.17-slim
+    depends_on:
+      - webapp
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
+    volumes:
+      - ./docker/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/proxy/sites-enabled:/etc/nginx/sites-enabled:ro
+      - ./docker/proxy/certs:/etc/nginx/conf.d:ro
+    networks:
+      - sala
+
+  webapp:
+    container_name: sala-webapp
+    build:
+      context: .
+      dockerfile: ./docker/webapp/Dockerfile
+    entrypoint: ["/usr/src/app/docker/entrypoint.sh"]
+    command: [ "npm", "run", "dev" ]
+    volumes:
+      - .:/usr/src/app
+      - /dev/shm:/dev/shm
+    ports:
+      - "127.0.0.1:3003:3003"
+    env_file: 
+      - .env/development/web
+    depends_on:
+      - mail
+      - storage
+    stdin_open: true
+    tty: true
+    networks:
+      - sala
+
+  mail:
+    container_name: sala-mail
+    image: mailhog/mailhog
+    ports:
+      - '127.0.0.1:8025:8025'
+      - '127.0.0.1:1025:1025'
+    networks:
+      - sala
+    logging:
+      driver: none
+  
+  redis:
+    container_name: sala-redis
+    image: redis:6.0.9
+    # ports:
+    #   - '127.0.0.1:6379:6379'
+    networks:
+      - sala
+
+  storage:
+    container_name: sala-storage
+    image: minio/minio:RELEASE.2023-08-04T17-40-21Z.hotfix.bfb2c8508
+    command: server /data --console-address ":9001"
+    networks:
+      - sala
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - storage-data:/data
+    env_file:
+      - .env/development/web
