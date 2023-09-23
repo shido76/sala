@@ -20,5 +20,8 @@
     "express-requests-logger": "^4.0.0",
     "path": "^0.12.7",
     "youch": "^3.2.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.3.1"
   }
 }
