@@ -7,6 +7,8 @@ networks:
 volumes:
   bundle:
     driver: local
+  db-data:
+    driver: local
   storage-data:
     driver: local
   redis-data:
@@ -49,6 +51,18 @@ services:
       - storage
     stdin_open: true
     tty: true
+    networks:
+      - sala
+
+  db:
+    container_name: sala-db
+    image: postgres:14.1
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env/development/database
+    ports:
+      - "127.0.0.1:5432:5432"
     networks:
       - sala
 

@@ -6,12 +6,16 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import Youch from 'youch';
 import audit from 'express-requests-logger';
+import { PrismaClient } from '@prisma/client';
 import * as Sentry from '@sentry/node';
 import sentryConfig from './config/sentry.js';
 import routes from './config/routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+//const prisma = new PrismaClient();
+//prisma.user;
 
 class App {
   constructor() {
