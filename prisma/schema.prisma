@@ -9,3 +9,46 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  numusp       String   @unique
+  phone        String?
+  profiles     String[] @default(["user"])
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Event        Event[]
+
+  @@map("users")
+}
+
+model Location {
+  id          String   @id @default(uuid())
+  description String
+  capacity    Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Event       Event[]
+
+  @@map("locations")
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id])
+  location    Location @relation(fields: [locationId], references: [id])
+  description String
+  startAt     DateTime
+  endAt       DateTime
+  obs         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  locationId  String
+
+  @@map("events")
+}
