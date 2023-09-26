@@ -4,11 +4,12 @@ import 'express-async-errors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
-import Youch from 'youch';
 import audit from 'express-requests-logger';
 import * as Sentry from '@sentry/node';
 import sentryConfig from './config/sentry.js';
 import routes from './config/routes.js';
+import ErrorsController from './controllers/errors.js';
+import CustomError from './lib/customError.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,17 +17,14 @@ const __dirname = path.dirname(__filename);
 class App {
   constructor() {
     this.server = express();
-
-    if (process.env.NODE_ENV === 'production')
-      Sentry.init(sentryConfig);
+    if (process.env.NODE_ENV === 'production') Sentry.init(sentryConfig);
     this.middlewares();
     this.routes();
     this.exceptionHandler();
   }
 
   middlewares() {
-    if (process.env.NODE_ENV === 'production') 
-      this.server.use(Sentry.Handlers.requestHandler());
+    if (process.env.NODE_ENV === 'production') this.server.use(Sentry.Handlers.requestHandler());
     this.server.use(cors());
     this.server.use(express.json());
     this.server.use(
@@ -62,18 +60,15 @@ class App {
 
   routes() {
     this.server.use(routes);
-    this.server.use(Sentry.Handlers.errorHandler());
+    this.server.all('*', (req, res, next) => {
+      const err = new CustomError(`Can't find ${req.originalUrl} on the server!`, 404);
+      next(err);
+    });
+    if (process.env.NODE_ENV === 'production') this.server.use(Sentry.Handlers.errorHandler());
   }
 
   exceptionHandler() {
-    this.server.use(async (err, req, res, next) => {
-      if (process.env.NODE_ENV === 'development') {
-        const errors = await new Youch(err, req).toJSON();
-        return res.status(500).json(errors);
-      }
-
-      return res.status(500).json({ error: 'Internal Server Error' });
-    });
+    this.server.use(ErrorsController.execute);
   }
 }
 
