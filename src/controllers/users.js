@@ -1,4 +1,4 @@
-import User from '../model/user.js';
+import User from '../models/user.js';
 import CustomError from '../lib/customError.js';
 
 class UsersController {

@@ -1,11 +1,11 @@
 import app from './app.js';
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV !== 'production') {
   console.info(process.env);
 }
 
-const server = app.listen(3003, () => {
-  console.log('Server running on port 3003!!!');
+const server = app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}!!!`);
 });
 
 process.on('uncaughtException', err => {

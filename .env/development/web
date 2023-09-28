@@ -1,0 +1,24 @@
+NODE_ENV=development
+PORT=3003
+
+# Auth
+APP_SECRET=WsgDDM%Mar^DqEATCov!22
+
+# Mongo
+#MONGO_URL=your-mongo-url
+
+# Database
+DATABASE_URL=postgres://postgres:123456@db:5432/sala_dev?schema=public
+
+# Redis
+#REDIS_HOST=your-redis-host
+#REDIS_PORT=6379
+
+# Mail
+#MAIL_HOST=mail
+#MAIL_PORT=1025
+#MAIL_USER=your-user-mail-if-exist
+#MAIL_PASS=your-pass-mail-if-exist
+
+# Sentry
+SENTRY_DSN=https://6a582382ecd04dc69d35b43b27890c9c@o313990.ingest.sentry.io/1788639

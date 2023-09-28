@@ -3,14 +3,6 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import CustomError from '../lib/customError.js';
 
-async function isNotUnique(attr, value) {
-  return await prisma.user.findUnique({
-    where: {
-      [attr]: value
-    }
-  })
-}
-
 class User {
   constructor() {
     this.error = {
@@ -23,12 +15,20 @@ class User {
     };
   }
 
+  static async findBy(attr, value) {
+    return await prisma.user.findUnique({
+      where: {
+        [attr]: value
+      }
+    })
+  }
+
   async isValid(data) {
     const schema = z.object({
-      email: z.string().email().nonempty('E-mail requerido'),
-      password: z.string().min(6).nonempty('Password requerido'),
-      name: z.string().nonempty('Nome requerido'),
-      numusp: z.string().nonempty('Numero USP requerido'),
+      email: z.string().email().nonempty('Required Email'),
+      password: z.string().min(6).nonempty('Required Password'),
+      name: z.string().nonempty('Required Name'),
+      numusp: z.string().nonempty('Required NumUSP'),
       phone: z.string(),
     });
 
@@ -40,10 +40,10 @@ class User {
 
     const { email, numusp } = result.data;
 
-    if (await isNotUnique('email', email))
+    if (await User.findBy('email', email))
       this.error['email'].push('Email already in use');
 
-    if (await isNotUnique('numusp', numusp))
+    if (await User.findBy('numusp', numusp))
       this.error['numusp'].push('Numusp already in use');
 
     return this.error.email.length === 0 && 
@@ -54,7 +54,7 @@ class User {
   }
   async create(data) {
     if (!await this.isValid(data))
-      throw new CustomError(`Error to validate user: ${JSON.stringify(this.error)}`, 209);
+      throw new CustomError(JSON.stringify(this.error), 209);
 
     const { email, password, name, numusp, phone } = data;
 

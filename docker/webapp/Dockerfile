@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:20
 
 RUN apt-get -y update && apt-get install -y \
   libgtk-3-dev \

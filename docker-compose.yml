@@ -41,11 +41,32 @@ services:
     command: [ "npm", "run", "dev" ]
     volumes:
       - .:/usr/src/app
-      - /dev/shm:/dev/shm
     ports:
       - "127.0.0.1:3003:3003"
     env_file: 
       - .env/development/web
+    depends_on:
+      - mail
+      - storage
+    stdin_open: true
+    tty: true
+    networks:
+      - sala
+
+  webapp-test:
+    container_name: sala-webapp-test
+    build:
+      context: .
+      dockerfile: ./docker/webapp/Dockerfile
+    entrypoint: ["/usr/src/app/docker/entrypoint.sh"]
+    command: [ "npm", "run", "dev" ]
+    volumes:
+      - .:/usr/src/app
+      - /dev/shm:/dev/shm
+    ports:
+      - "127.0.0.1:3004:3003"
+    env_file: 
+      - .env/test/web
     depends_on:
       - mail
       - storage
