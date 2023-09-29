@@ -4,21 +4,21 @@ import User from '../../models/user.js';
 
 const prisma = new PrismaClient();
 
-beforeEach(async () => {
-  this.data = {
-    email: "fdescarte@gmail.com",
-    password: "123456",
-    name: "Fábio José da Silva",
-    numusp: "5265565",
-    phone: "(11) 98030-9205"
-  }
-
-  await prisma.$transaction([
-    prisma.user.deleteMany()
-  ]);
-})
-
 describe ('user', () => {
+  beforeEach(async () => {
+    this.data = {
+      email: "fdescarte@gmail.com",
+      password: "123456",
+      name: "Fábio José da Silva",
+      numusp: "5265565",
+      phone: "(11) 98030-9205"
+    };
+
+    await prisma.$transaction([
+      prisma.user.deleteMany()
+    ]);
+  });
+
   it('should save', async () => {
     const user = new User();
     const newUser = await user.create(this.data);

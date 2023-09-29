@@ -68,6 +68,3 @@ content/*.jpg
 content/*.js
 content/*.mov
 .DS_Store
-
-# .wwebjs_auth/
-# .wwebjs_cache/

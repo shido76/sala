@@ -3,6 +3,7 @@ PORT=3004
 
 # Auth
 APP_SECRET=WsgDDM%Mar^DqEATCov!22
+JWT_SECRET=WsgDDM%Mar^DqEATCov!22
 
 # Mongo
 #MONGO_URL=your-mongo-url

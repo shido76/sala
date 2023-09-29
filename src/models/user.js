@@ -56,7 +56,7 @@ class User {
     if (!await this.isValid(data))
       throw new CustomError(JSON.stringify(this.error), 209);
 
-    const { email, password, name, numusp, phone } = data;
+    const { email, password, name, numusp, phone, active } = data;
 
     const user = await prisma.user.create({
       data: {
@@ -65,6 +65,7 @@ class User {
         name,
         numusp,
         phone,
+        active,
       }
     })
 
