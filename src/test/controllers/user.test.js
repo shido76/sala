@@ -43,6 +43,22 @@ describe('User controller', () => {
     expect(response.status).toBe(401);
   }),
 
+  it('should not list users if jwt is not valid', async () => {
+    const response = await request(app)
+      .get('/users')
+      .set('Authorization', `Bearer ${token}XXX`);
+
+    expect(response.status).toBe(401);
+  }),
+
+  it('should return not 404 if path not found', async () => {
+    const response = await request(app)
+      .get('/usersaa')
+      .set('Authorization', `Bearer ${token}`);
+    
+    expect(response.status).toBe(404);
+  }),
+
   it('should create user', async () => {
     const data = {
       email: "fjs@usp.br",
@@ -59,9 +75,7 @@ describe('User controller', () => {
     expect(response.status).toBe(201);
   }),
 
-  it('should not create user if user already exists', () => {
-    // expect inside .end when controoler action trigger a exception
-    // async/await bug in supertest 
+  it('should not create user if user already exists', async () => {
     const data = {
       email: "fjs@usp.br",
       password: "123456",
@@ -70,13 +84,10 @@ describe('User controller', () => {
       phone: "(11) 98030-9205"
     };
 
-    const response = request(app)
+    const response = await request(app)
       .post('/users')
       .set('Authorization', `Bearer ${token}`)
-      .send(data)
-      .end((err, res) => {
-        res.status.should.equal(209);
-        done();
-      });
+      .send(data);
+    expect(response.status).toBe(209);
   })
 })

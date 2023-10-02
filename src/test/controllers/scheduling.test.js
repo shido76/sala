@@ -69,6 +69,16 @@ describe('Scheduling controller', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(dataScheduling);
     expect(response.status).toBe(201);
+  }),
+
+  it('should not create scheduling if description not present', async () => {
+    const data = { ...dataScheduling, description: "" };
+
+    const response = await request(app)
+      .post('/schedulings')
+      .set('Authorization', `Bearer ${token}`)
+      .send(data);
+    expect(response.status).toBe(209);
   })
   
 })
