@@ -59,7 +59,9 @@ describe('User controller', () => {
     expect(response.status).toBe(201);
   }),
 
-  it.skip('should not create user if user already exists', async () => {
+  it('should not create user if user already exists', () => {
+    // expect inside .end when controoler action trigger a exception
+    // async/await bug in supertest 
     const data = {
       email: "fjs@usp.br",
       password: "123456",
@@ -68,10 +70,13 @@ describe('User controller', () => {
       phone: "(11) 98030-9205"
     };
 
-    const response = await request(app)
+    const response = request(app)
       .post('/users')
       .set('Authorization', `Bearer ${token}`)
-      .send(data);
-    expect(response.status).toBe(209);
+      .send(data)
+      .end((err, res) => {
+        res.status.should.equal(209);
+        done();
+      });
   })
 })

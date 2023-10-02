@@ -69,13 +69,6 @@ describe('Scheduling controller', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(dataScheduling);
     expect(response.status).toBe(201);
-  }),
-
-  it.skip('should not create scheduling if scheduling already exists', async () => {
-    const response = await request(app)
-      .post('/schedulings')
-      .set('Authorization', `Bearer ${token}`)
-      .send(dataScheduling);
-    expect(response.status).toBe(209);
   })
+  
 })

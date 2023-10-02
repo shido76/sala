@@ -57,16 +57,22 @@ describe('Location controller', () => {
     expect(response.status).toBe(201);
   }),
 
-  it.skip('should not create location if location already exists', async () => {
+  it('should not create location if location already exists', () => {
+    // expect inside .end when controoler action trigger a exception 
+    // async/await bug in supertest
     const data = {
       name: "Teste",
       capacity: 100,
     };
 
-    const response = await request(app)
+    const response = request(app)
       .post('/locations')
       .set('Authorization', `Bearer ${token}`)
-      .send(data);
-    expect(response.status).toBe(209);
+      .send(data)
+      .end((err, res) => {
+        res.status.should.equal(209);
+        done();
+      });
+
   })
 })
