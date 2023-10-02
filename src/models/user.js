@@ -1,10 +1,12 @@
 import { prisma } from '../lib/prisma.js';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import Base from '../models/base.js';
 import CustomError from '../lib/customError.js';
 
-class User {
+class User extends Base {
   constructor() {
+    super();
     this.error = {
       base: "",
       email: [],
@@ -21,6 +23,25 @@ class User {
         [attr]: value
       }
     })
+  }
+
+  static async findAll(filter = { active: true }) {
+
+    return await prisma.user.findMany({
+      where: filter,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        numusp: true,
+        phone: true,
+        profiles: true,
+        active: true,
+      },
+      orderBy: {
+        name: 'asc',
+      }
+    });
   }
 
   async isValid(data) {

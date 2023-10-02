@@ -17,6 +17,13 @@ describe('user auth db', () => {
 
     const user = new User();
     await user.create(this.data);
+
+    return async () => {
+      await prisma.$transaction([
+        prisma.user.deleteMany({})
+      ]);
+      await prisma.$disconnect();
+    }
   }),
 
   it('should return user if email and password are correct and active', async () => {

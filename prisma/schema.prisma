@@ -11,33 +11,33 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String       @id @default(uuid())
+  email        String       @unique
   passwordHash String
   name         String?
-  numusp       String   @unique
+  numusp       String       @unique
   phone        String?
-  profiles     String[] @default(["user"])
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  Event        Event[]
+  profiles     String[]     @default(["user"])
+  active       Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  Scheduling   Scheduling[]
 
   @@map("users")
 }
 
 model Location {
-  id          String   @id @default(uuid())
-  description String
-  capacity    Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  Event       Event[]
+  id         String       @id @default(uuid())
+  name       String       @unique
+  capacity   Int?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Scheduling Scheduling[]
 
   @@map("locations")
 }
 
-model Event {
+model Scheduling {
   id          String   @id @default(uuid())
   user        User     @relation(fields: [userId], references: [id])
   location    Location @relation(fields: [locationId], references: [id])
@@ -50,5 +50,5 @@ model Event {
   userId      String
   locationId  String
 
-  @@map("events")
+  @@map("schedulings")
 }

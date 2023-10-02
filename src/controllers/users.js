@@ -3,14 +3,13 @@ import CustomError from '../lib/customError.js';
 
 class UsersController {
   async index(req, res) {
-    res.status(200).json({ msg: 'Start ok!' });
+    const users = await User.findAll();
+    res.status(200).json({ users });
   }
 
   async create(req, res, next) {
-    const user = new User();
-  
     try {
-      await user.create(req.body);
+      await new User().create(req.body);
       return res.status(201).json();
     } catch (err) {
       const error = new CustomError(err, 209);

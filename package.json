@@ -5,7 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "vitest run --no-threads",
+    "test:unit": "vitest run --no-threads --dir ./src/test/models",
+    "test:integration": "vitest run --no-threads --dir ./src/test/controllers",
     "test:coverage": "vitest run --no-threads --coverage",
     "dev": "node --watch src/server.js",
     "prod": "pm2-runtime src/server.js"
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@vitest/coverage-v8": "^0.34.5",
     "prisma": "^5.3.1",
+    "supertest": "^6.3.3",
     "vitest": "^0.34.5",
     "vitest-mock-extended": "^1.2.1"
   }

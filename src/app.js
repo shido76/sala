@@ -30,31 +30,33 @@ class App {
       '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
     );
-    this.server.use(audit({
-      doubleAudit: (process.env.NODE_ENV === 'development' ? true : false),  
-      excludeURLs: ['health', 'metrics'],
-      request: {
-        maskBody: ['password'], 
-        excludeHeaders: ['authorization'],
-        excludeBody: ['creditCard'],
-        maskHeaders: ['header1'],
-        maxBodyLength: 50
-      },
-      response: {
-        maskBody: ['session_token'],
-        excludeHeaders: ['authorization'],
-        excludeBody: ['creditCard'],
-        maskHeaders: ['header1'],
-        maxBodyLength: 50,
-        levels: {
-          "2xx": "info",
-          "401": "warn", 
-          "4xx": "info",
-          "503": "warn",
-          "5xx": "error",
+    if (process.env.NODE_ENV !== 'test') {
+      this.server.use(audit({
+        doubleAudit: (process.env.NODE_ENV === 'development' ? true : false),  
+        excludeURLs: ['health', 'metrics'],
+        request: {
+          maskBody: ['password'], 
+          excludeHeaders: ['authorization'],
+          excludeBody: ['creditCard'],
+          maskHeaders: ['header1'],
+          maxBodyLength: 50
         },
-      },
-    }));
+        response: {
+          maskBody: ['session_token'],
+          excludeHeaders: ['authorization'],
+          excludeBody: ['creditCard'],
+          maskHeaders: ['header1'],
+          maxBodyLength: 50,
+          levels: {
+            "2xx": "info",
+            "401": "warn", 
+            "4xx": "info",
+            "503": "warn",
+            "5xx": "error",
+          },
+        },
+      }));
+    }
   }
 
   routes() {

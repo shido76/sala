@@ -1,10 +1,18 @@
 import { PrismaClient } from '@prisma/client';
-import { expect, describe, it, beforeEach } from 'vitest';
+import { expect, describe, it, beforeEach, beforeAll } from 'vitest';
 import User from '../../models/user.js';
 
 const prisma = new PrismaClient();
 
 describe ('user', () => {
+  beforeAll(async () => {
+    return async () => {
+      await prisma.$transaction([
+        prisma.user.deleteMany({})
+      ]);
+    }
+  }),
+
   beforeEach(async () => {
     this.data = {
       email: "fdescarte@gmail.com",
@@ -15,8 +23,9 @@ describe ('user', () => {
     };
 
     await prisma.$transaction([
-      prisma.user.deleteMany()
+      prisma.user.deleteMany({})
     ]);
+    await prisma.$disconnect();
   });
 
   it('should save', async () => {
@@ -136,5 +145,16 @@ describe ('user', () => {
 
     const user = new User();
     await expect(() => user.create(data)).rejects.toThrowError('Invalid email');
+  }),
+
+  it('should retrieve all users', async () => {
+    let users = await User.findAll();
+    expect(users.length).toEqual(0);
+
+    const user = new User();
+    await user.create(this.data);
+
+    users = await User.findAll();
+    expect(users.length).toEqual(1);
   })
 })
