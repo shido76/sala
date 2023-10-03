@@ -18,8 +18,8 @@ describe ('location', () => {
   });
 
   it('should save', async () => {
-    const location = new Location();
-    const newLocation = await location.create(this.data);
+    const location = new Location(this.data);
+    const newLocation = await location.create();
     expect(newLocation).toBeTruthy();
   }),
 
@@ -29,16 +29,16 @@ describe ('location', () => {
       capacity: 100
     }
 
-    const location = new Location();
-    await location.isValid(data);
+    const location = new Location(data);
+    await location.isValid();
     expect(location.error['base']['name']['_errors']).toContain('Required Name');
   }),
 
   it('should not save if name already exists', async () => {
-    const location = new Location();
-    await location.create(this.data);
+    const location = new Location(this.data);
+    await location.create();
 
-    await location.isValid(this.data);
+    await location.isValid();
     expect(location.error['name']).toMatch(/Name already in use/);
   }),
 
@@ -48,8 +48,8 @@ describe ('location', () => {
       capacity: -1
     }
 
-    const location = new Location();
-    await location.isValid(data);
+    const location = new Location(data);
+    await location.isValid();
     expect(location.error['base']['capacity']['_errors']).toContain('Capacity must be greater than 0');
   }),
 
@@ -59,8 +59,8 @@ describe ('location', () => {
       capacity: "xxx"
     }
 
-    const location = new Location();
-    await location.isValid(data);
+    const location = new Location(data);
+    await location.isValid();
     expect(location.error['base']['capacity']['_errors']).toContain('Capacity must be a number');
   }),
 
@@ -70,7 +70,7 @@ describe ('location', () => {
       capacity: 100
     };
 
-    const location = new Location();
+    const location = new Location(data);
     await expect(() => location.create(data)).rejects.toThrowError('Required Name');
   }),
 
@@ -78,10 +78,24 @@ describe ('location', () => {
     let locations = await Location.findAll();
     expect(locations.length).toEqual(0);
 
-    const location = new Location();
-    await location.create(this.data);
+    const location = new Location(this.data);
+    await location.create();
 
     locations = await Location.findAll();
     expect(locations.length).toEqual(1);
+  }),
+
+  it('should delete a location', async () => {
+    const location = await new Location(this.data).create();
+    await Location.destroy(location.id);
+
+    const locations = await Location.findAll();
+    expect(locations.length).toEqual(0);
+  }),
+
+  it('should retrieve a location', async () => {
+    const location = await new Location(this.data).create();
+    const locationRetrieved = await Location.find(location.id);
+    expect(locationRetrieved.id).toEqual(location.id);
   })
 })

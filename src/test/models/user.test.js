@@ -29,8 +29,8 @@ describe ('user', () => {
   });
 
   it('should save', async () => {
-    const user = new User();
-    const newUser = await user.create(this.data);
+    const user = new User(this.data);
+    const newUser = await user.create();
     expect(newUser).toBeTruthy();
   }),
 
@@ -43,8 +43,8 @@ describe ('user', () => {
       phone: "(11) 98030-9205"
     }
 
-    const user = new User();
-    await user.isValid(data);
+    const user = new User(data);
+    await user.isValid();
     expect(user.error['base']['email']['_errors']).toContain('Required Email');
   }),
 
@@ -57,16 +57,16 @@ describe ('user', () => {
       phone: "(11) 98030-9205"
     }
 
-    const user = new User();
-    await user.isValid(data);
+    const user = new User(data);
+    await user.isValid();
     expect(user.error['base']['email']['_errors']).toContain('Invalid email');
   }),
 
   it('should not save if email already exists', async () => {
-    const user = new User();
-    await user.create(this.data);
+    const user = new User(this.data);
+    await user.create();
 
-    await user.isValid(this.data);
+    await user.isValid();
     expect(user.error['email']).toMatch(/Email already in use/);
   }),
 
@@ -79,8 +79,8 @@ describe ('user', () => {
       phone: "(11) 98030-9205"
     }
 
-    const user = new User();
-    await user.isValid(data);
+    const user = new User(data);
+    await user.isValid();
     expect(user.error['base']['password']['_errors']).toContain('Required Password');
   }),
 
@@ -93,8 +93,8 @@ describe ('user', () => {
       phone: "(11) 98030-9205"
     }
 
-    const user = new User();
-    await user.isValid(data);
+    const user = new User(data);
+    await user.isValid();
     expect(user.error['base']['password']['_errors']).toContain('String must contain at least 6 character(s)');
   }),
 
@@ -107,8 +107,8 @@ describe ('user', () => {
       phone: "(11) 98030-9205"
     }
 
-    const user = new User();
-    await user.isValid(data);
+    const user = new User(data);
+    await user.isValid();
     expect(user.error['base']['name']['_errors']).toContain('Required Name');
   }),
 
@@ -121,16 +121,16 @@ describe ('user', () => {
       phone: "(11) 98030-9205"
     }
 
-    const user = new User();
-    await user.isValid(data);
+    const user = new User(data);
+    await user.isValid();
     expect(user.error['base']['numusp']['_errors']).toContain('Required NumUSP');
   }),
 
   it('should not save if numusp already exists', async () => {
-    const user = new User();
-    await user.create(this.data);
+    const user = new User(this.data);
+    await user.create();
 
-    await user.isValid(this.data);
+    await user.isValid();
     expect(user.error['numusp']).toMatch(/Numusp already in use/);
   }),
 
@@ -143,18 +143,32 @@ describe ('user', () => {
       phone: "(11) 98030-9205"
     }
 
-    const user = new User();
-    await expect(() => user.create(data)).rejects.toThrowError('Invalid email');
+    const user = new User(data);
+    await expect(() => user.create()).rejects.toThrowError('Invalid email');
   }),
 
   it('should retrieve all users', async () => {
     let users = await User.findAll();
     expect(users.length).toEqual(0);
 
-    const user = new User();
-    await user.create(this.data);
+    const user = new User(this.data);
+    await user.create();
 
     users = await User.findAll();
     expect(users.length).toEqual(1);
+  }),
+
+  it('should delete a user', async () => {
+    const user = await new User(this.data).create();
+    await User.destroy(user.id);
+    
+    const users = await User.findAll();
+    expect(users.length).toEqual(0);
+  }),
+
+  it('should retrieve a user', async () => {
+    const user = await new User(this.data).create();
+    const userRetrieved = await User.find(user.id);
+    expect(userRetrieved.id).toEqual(user.id);
   })
 })

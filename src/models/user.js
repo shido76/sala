@@ -5,8 +5,9 @@ import Base from '../models/base.js';
 import CustomError from '../lib/customError.js';
 
 class User extends Base {
-  constructor() {
+  constructor(data) {
     super();
+    this.data = data;
     this.error = {
       base: "",
       email: [],
@@ -44,7 +45,7 @@ class User extends Base {
     });
   }
 
-  async isValid(data) {
+  async isValid() {
     const schema = z.object({
       email: z.string().email().nonempty('Required Email'),
       password: z.string().min(6).nonempty('Required Password'),
@@ -53,7 +54,7 @@ class User extends Base {
       phone: z.string(),
     });
 
-    const result = schema.safeParse(data);
+    const result = schema.safeParse(this.data);
     if (!result.success) {
       this.error.base = result.error.format();
       return false;
@@ -73,11 +74,11 @@ class User extends Base {
            this.error.numusp.length === 0 && 
            this.error.phone.length === 0
   }
-  async create(data) {
-    if (!await this.isValid(data))
+  async create() {
+    if (!await this.isValid())
       throw new CustomError(JSON.stringify(this.error), 209);
 
-    const { email, password, name, numusp, phone, active } = data;
+    const { email, password, name, numusp, phone, active } = this.data;
 
     const user = await prisma.user.create({
       data: {
@@ -92,6 +93,33 @@ class User extends Base {
 
     return user;
   }
+
+  static async destroy(id) {
+    return await prisma.user.delete({
+      where: {
+        id
+      }
+    });
+  }
+
+  static async find(id) {
+    return await prisma.user.findUnique({
+      where: {
+        id
+      }
+    });
+  }
+
+  // async update(id, data) {
+  //   if (!await this.isValid(data))
+  //     throw new CustomError(JSON.stringify(this.error), 209);
+  //   const user = await prisma.user.update({
+  //     where: {
+  //       id
+  //     },
+  //     data
+  //   })
+  // }
 }
 
 export default User;

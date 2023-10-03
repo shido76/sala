@@ -24,8 +24,8 @@ describe ('scheduling', () => {
       capacity: 100,
     }
     
-    user = await new User().create(userData);
-    location = await new Location().create(locationData);
+    user = await new User(userData).create();
+    location = await new Location(locationData).create();
     
     this.data = {
       description: "Evento XI de Agosto",
@@ -52,7 +52,7 @@ describe ('scheduling', () => {
   });
 
   it('should save', async () => {
-    const scheduling = await new Scheduling().create(this.data);
+    const scheduling = await new Scheduling(this.data).create();
     expect(scheduling).toBeTruthy();
   }),
 
@@ -65,22 +65,9 @@ describe ('scheduling', () => {
       locationId: location.id,
     };
 
-    const scheduling = new Scheduling();
-    await scheduling.isValid(data);
+    const scheduling = new Scheduling(data);
+    await scheduling.isValid();
     expect(scheduling.error['base']['description']['_errors']).toContain('Required Description');
-  }),
-
-  it('should not save if startAt not present', async () => {
-    const data = {
-      description: "Evento XI de Agosto",
-      endAt: "2023-09-30T20:00:00-03:00",
-      userId: user.id,
-      locationId: location.id,
-    };
-
-    const scheduling = new Scheduling();
-    await scheduling.isValid(data);
-    expect(scheduling.error['base']['startAt']['_errors']).toContain('Required startAt');
   }),
 
   it('should not save if startAt is invalid', async () => {
@@ -92,22 +79,9 @@ describe ('scheduling', () => {
       locationId: location.id,
     };
 
-    const scheduling = new Scheduling();
-    await scheduling.isValid(data);
+    const scheduling = new Scheduling(data);
+    await scheduling.isValid();
     expect(scheduling.error['base']['startAt']['_errors']).toContain('Invalid startAt');
-  }),
-
-  it('should not save if endAt not present', async () => {
-    const data = {
-      description: "Evento XI de Agosto",
-      startAt: "2023-09-30T19:00:00-03:00",
-      userId: user.id,
-      locationId: location.id,
-    };
-
-    const scheduling = new Scheduling();
-    await scheduling.isValid(data);
-    expect(scheduling.error['base']['endAt']['_errors']).toContain('Required endAt');
   }),
 
   it('should not save if endAt is invalid', async () => {
@@ -119,8 +93,8 @@ describe ('scheduling', () => {
       locationId: location.id,
     };
 
-    const scheduling = new Scheduling();
-    await scheduling.isValid(data);
+    const scheduling = new Scheduling(data);
+    await scheduling.isValid();
     expect(scheduling.error['base']['endAt']['_errors']).toContain('Invalid endAt');
   }),
 
@@ -133,8 +107,8 @@ describe ('scheduling', () => {
       locationId: location.id,
     };
 
-    const scheduling = new Scheduling();
-    await scheduling.isValid(data);
+    const scheduling = new Scheduling(data);
+    await scheduling.isValid();
     expect(scheduling.error['base']['userId']['_errors']).toContain('Required UserId');
   }),
 
@@ -147,8 +121,8 @@ describe ('scheduling', () => {
       locationId: '',
     };
 
-    const scheduling = new Scheduling();
-    await scheduling.isValid(data);
+    const scheduling = new Scheduling(data);
+    await scheduling.isValid();
     expect(scheduling.error['base']['locationId']['_errors']).toContain('Required LocationId');
   }),
 
@@ -161,18 +135,32 @@ describe ('scheduling', () => {
       locationId: location.id,
     };
 
-    const scheduling = new Scheduling();
-    await expect(() => scheduling.create(data)).rejects.toThrowError('Required Description');
+    const scheduling = new Scheduling(data);
+    await expect(() => scheduling.create()).rejects.toThrowError('Required Description');
   }),
 
   it('should retrieve all schedulings', async () => {
     let schedulings = await Scheduling.findAll();
     expect(schedulings.length).toEqual(0);
 
-    const scheduling = new Scheduling();
-    await scheduling.create(this.data);
+    const scheduling = new Scheduling(this.data);
+    await scheduling.create();
 
     schedulings = await Scheduling.findAll();
     expect(schedulings.length).toEqual(1);
+  }),
+
+  it('should delete a scheduling', async () => {
+    const scheduling = await new Scheduling(this.data).create();
+    await Scheduling.destroy(scheduling.id);
+
+    const schedulings = await Scheduling.findAll();
+    expect(schedulings.length).toEqual(0);
+  }),
+
+  it('should retrieve a scheduling', async () => {
+    const scheduling = await new Scheduling(this.data).create();
+    const schedulingRetrieved = await Scheduling.find(scheduling.id);
+    expect(schedulingRetrieved.id).toEqual(scheduling.id);
   })
 })

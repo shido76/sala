@@ -8,10 +8,8 @@ class SchedulingsController {
   }
 
   async create(req, res, next) {
-    const scheduling = new Scheduling();
-
     try {
-      await scheduling.create(req.body);
+      await new Scheduling(req.body).create();
       return res.status(201).json();
     } catch (err) {
       const error = new CustomError(err, 209);

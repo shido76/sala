@@ -24,8 +24,8 @@ describe('Scheduling controller', () => {
       capacity: 100,
     };
 
-    const user = await new User().create(userData);
-    const location = await new Location().create(locationData);
+    const user = await new User(userData).create();
+    const location = await new Location(locationData).create();
 
     dataScheduling = {
       description: "Evento XI de Agosto",

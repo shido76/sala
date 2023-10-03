@@ -8,8 +8,13 @@ function dateToISO(dateStr) {
 }
 
 class Scheduling extends Base {
-  constructor() {
+  constructor(data) {
     super();
+    this.data = {
+      ...data,
+      startAt: data.startAt ? dateToISO(data.startAt) : null,
+      endAt: data.endAt ? dateToISO(data.endAt) : null,
+    };
     this.error = {
       base: "",
       description: [],
@@ -35,7 +40,7 @@ class Scheduling extends Base {
     });
   }
 
-  async isValid(data) {
+  async isValid() {
     const schema = z.object({
       description: z.string().nonempty('Required Description'),
       startAt: z.date({
@@ -50,7 +55,7 @@ class Scheduling extends Base {
       locationId: z.string().uuid().nonempty('Required LocationId'),
     });
 
-    const result = schema.safeParse(data);
+    const result = schema.safeParse(this.data);
     if (!result.success) {
       this.error.base = result.error.format();
       return false;
@@ -60,24 +65,17 @@ class Scheduling extends Base {
            this.error.startAt.length === 0 &&
            this.error.endAt.length === 0
   }
-  async create(data) {
-    const { description, startAt, endAt, userId, locationId } = data;
-
-    if (!await this.isValid({
-      description,
-      startAt: dateToISO(startAt),
-      endAt: dateToISO(endAt),
-      userId,
-      locationId
-    }))
+  async create() {
+    if (!await this.isValid())
       throw new CustomError(JSON.stringify(this.error), 209);
-
+  
+    const { description, startAt, endAt, userId, locationId } = this.data;
 
     const scheduling = await prisma.scheduling.create({
       data: {
         description,
-        startAt: dateToISO(startAt),
-        endAt: dateToISO(endAt),
+        startAt,
+        endAt,
         user: {
           connect: {
             id: userId
@@ -92,6 +90,22 @@ class Scheduling extends Base {
     })
 
     return scheduling;
+  }
+
+  static async destroy(id) {
+    return await prisma.scheduling.delete({
+      where: {
+        id
+      }
+    });
+  }
+
+  static async find(id) {
+    return await prisma.scheduling.findUnique({
+      where: {
+        id
+      }
+    });
   }
 }
 

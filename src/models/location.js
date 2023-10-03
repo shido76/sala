@@ -4,8 +4,9 @@ import Base from '../models/base.js';
 import CustomError from '../lib/customError.js';
 
 class Location extends Base {
-  constructor() {
+  constructor(data) {
     super();
+    this.data = data;
     this.error = {
       base: "",
       name: [],
@@ -36,7 +37,7 @@ class Location extends Base {
     });
   }
 
-  async isValid(data) {
+  async isValid() {
     const schema = z.object({
       name: z.string().nonempty('Required Name'),
       capacity: z.number({
@@ -44,7 +45,7 @@ class Location extends Base {
       }).int().positive('Capacity must be greater than 0')
     });
 
-    const result = schema.safeParse(data);
+    const result = schema.safeParse(this.data);
     if (!result.success) {
       this.error.base = result.error.format();
       return false;
@@ -58,11 +59,11 @@ class Location extends Base {
     return this.error.name.length === 0 && 
            this.error.capacity.length === 0
   }
-  async create(data) {
-    if (!await this.isValid(data))
+  async create() {
+    if (!await this.isValid())
       throw new CustomError(JSON.stringify(this.error), 209);
 
-    const { name, capacity } = data;
+    const { name, capacity } = this.data;
 
     const location = await prisma.location.create({
       data: {
@@ -72,6 +73,22 @@ class Location extends Base {
     })
 
     return location;
+  }
+
+  static async destroy(id) {
+    return await prisma.location.delete({
+      where: {
+        id
+      }
+    });
+  }
+
+  static async find(id) {
+    return await prisma.location.findUnique({
+      where: {
+        id
+      }
+    });
   }
 }
 

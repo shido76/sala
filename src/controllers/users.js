@@ -9,7 +9,7 @@ class UsersController {
 
   async create(req, res, next) {
     try {
-      await new User().create(req.body);
+      await new User(req.body).create();
       return res.status(201).json();
     } catch (err) {
       const error = new CustomError(err, 209);

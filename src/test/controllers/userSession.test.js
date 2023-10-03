@@ -15,7 +15,7 @@ describe('UserSession controller', () => {
       numusp: "5265565",
       phone: "(11) 98030-9205"
     };
-    await new User().create(data);
+    await new User(data).create();
 
     return async () => {
       await prisma.$transaction([

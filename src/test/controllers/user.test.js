@@ -16,7 +16,7 @@ describe('User controller', () => {
       numusp: "5265565",
       phone: "(11) 98030-9205"
     };
-    await new User().create(data);
+    await new User(data).create();
     const response = await request(app)
       .post('/session')
       .send({ email: 'fdescartes@gmail.com', password: '123456' });

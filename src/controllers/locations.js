@@ -8,10 +8,8 @@ class LocationsController {
   }
 
   async create(req, res, next) {
-    const location = new Location();
-
     try {
-      await location.create(req.body);
+      await new Location(req.body).create();
       return res.status(201).json();
     } catch (err) {
       const error = new CustomError(err, 209);

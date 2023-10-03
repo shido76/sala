@@ -15,8 +15,8 @@ describe('user session', () => {
       phone: "(11) 98030-9205"
     };
 
-    const user = new User();
-    await user.create(this.data);
+    const user = new User(this.data);
+    await user.create();
 
     return async () => {
       await prisma.$transaction([
