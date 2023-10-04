@@ -3,6 +3,7 @@ import { expect, describe, it, beforeAll } from 'vitest';
 import { prisma } from '../../lib/prisma.js';
 import app from '../../app.js';
 import User from '../../models/user.js';
+import Location from '../../models/location.js';
 
 let token;
 
@@ -16,6 +17,8 @@ describe('Location controller', () => {
       phone: "(11) 98030-9205"
     };
     await new User(data).create();
+    this.location = await new Location({ name: "Teste I", capacity: 100 }).create();
+
     const response = await request(app)
       .post('/session')
       .send({ email: 'fdescartes@gmail.com', password: '123456' });
@@ -30,20 +33,20 @@ describe('Location controller', () => {
     }
   })
 
-  it('should list locations', async () => {
+  it('INDEX - should list locations', async () => {
     const response = await request(app)
       .get('/locations')
       .set('Authorization', `Bearer ${token}`);
     expect(response.status).toBe(200);
   }),
 
-  it('should not list locations if location not authenticated', async () => {
+  it('INDEX - should not list locations if location not authenticated', async () => {
     const response = await request(app)
       .get('/locations');
     expect(response.status).toBe(401);
   }),
 
-  it('should create location', async () => {
+  it('CREATE - should create location', async () => {
     const data = {
       name: "Teste",
       capacity: 100,
@@ -54,9 +57,10 @@ describe('Location controller', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(data);
     expect(response.status).toBe(201);
+    expect(response.body.name).toEqual(data.name);
   }),
 
-  it('should not create location if location already exists', async () => {
+  it('CREATE - should not create location if location already exists', async () => {
     const data = {
       name: "Teste",
       capacity: 100,
@@ -67,6 +71,48 @@ describe('Location controller', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(data);
       
+    expect(response.status).toBe(209);
+  }),
+
+  it('SHOW - should retrieve location', async () => {
+    const response = await request(app)
+      .get(`/locations/${this.location.id}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.status).toBe(200);
+    expect(response.body.description).toEqual(this.location.description);
+  }),
+
+  it('UPDATE - should update location', async () => {
+    const dataLocation = { name: "Teste I", capacity: 100 }
+    const response = await request(app)
+      .put(`/locations/${this.location.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(dataLocation);
+    expect(response.status).toBe(200);
+    expect(response.body.description).toEqual(dataLocation.description);
+  }),
+
+  it('UPDATE - should not update location', async () => {
+    const response = await request(app)
+      .put(`/locations/${this.location.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: "" });
+    expect(response.status).toBe(209);
+  }),
+
+  it('DELETE - should delete location', async () => {
+    const dataLocation = { name: "Teste II", capacity: 100 }
+    const location = await new Location(dataLocation).create();
+    const response = await request(app)
+      .delete(`/locations/${location.id}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.status).toBe(200);
+  }),
+
+  it('DELETE - should not delete location', async () => {
+    const response = await request(app)
+      .delete('/locations/1')
+      .set('Authorization', `Bearer ${token}`);
     expect(response.status).toBe(209);
   })
 })

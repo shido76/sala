@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const env = {
   'development': ['query', 'info', 'warn', 'error'],
   'production': ['warn', 'error'],
-  'test': ['error']
+  'test': []
 }
 
 export const prisma = new PrismaClient({
