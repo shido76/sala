@@ -45,8 +45,8 @@ const prodErrors = (res, err) => {
 
 class ErrorsController {
   async execute(err, req, res, next) {
-    err.statusCode = err.statusCode || 500;
-    err.status = err.status || 'error';
+    err.statusCode ||= 500;
+    err.status ||= 'error';
 
     if (process.env.NODE_ENV !== 'production') {
       devErrors(res, err);

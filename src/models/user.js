@@ -4,6 +4,24 @@ import { z } from 'zod';
 import Base from '../models/base.js';
 import CustomError from '../lib/customError.js';
 
+async function prepareDataCreate(data) {
+  return {
+    ...data,
+    passwordHash: data.password ? await bcrypt.hash(data.password, 8) : null,
+  };
+}
+
+async function prepareDataUpdate(data) {
+  const dataModified = { ...data };
+
+  if (data.password) {
+    dataModified['passwordHash'] = await bcrypt.hash(data.password, 8);
+    delete dataModified.password;
+  }
+
+  return dataModified;
+}
+
 class User extends Base {
   constructor(data) {
     super();
@@ -54,7 +72,8 @@ class User extends Base {
       phone: z.string(),
     });
 
-    const result = schema.safeParse(this.data);
+    const result = schema.safeParse(await prepareDataCreate(this.data));
+
     if (!result.success) {
       this.error.base = result.error.format();
       return false;
@@ -74,21 +93,57 @@ class User extends Base {
            this.error.numusp.length === 0 && 
            this.error.phone.length === 0
   }
+  async isValidUpdate() {
+    const schema = z.object({
+      email: z.string().email().nonempty('Required Email').optional(),
+      password: z.string().min(6).nonempty('Required Password').optional(),
+      name: z.string().nonempty('Required Name').optional(),
+      numusp: z.string().nonempty('Required NumUSP').optional(),
+      phone: z.string().optional(),
+    });
+
+    const result = schema.safeParse(await prepareDataUpdate(this.data));
+
+    if (!result.success) {
+      this.error.base = result.error.format();
+      return false;
+    }
+
+    return this.error.email.length === 0 &&
+      this.error.password.length === 0 &&
+      this.error.name.length === 0 &&
+      this.error.numusp.length === 0 &&
+      this.error.phone.length === 0
+  }
   async create() {
     if (!await this.isValid())
       throw new CustomError(JSON.stringify(this.error), 209);
 
-    const { email, password, name, numusp, phone, active } = this.data;
+    const { email, passwordHash, name, numusp, phone, active } = await prepareDataCreate(this.data);
 
     const user = await prisma.user.create({
       data: {
         email,
-        passwordHash: await bcrypt.hash(password, 8),
+        passwordHash,
         name,
         numusp,
         phone,
         active,
       }
+    })
+
+    return user;
+  }
+
+  async update(id) {
+    if (!await this.isValidUpdate())
+      throw new CustomError(JSON.stringify(this.error), 209);
+
+    const user = await prisma.user.update({
+      where: {
+        id
+      },
+      data: await prepareDataUpdate(this.data),
     })
 
     return user;
@@ -109,17 +164,6 @@ class User extends Base {
       }
     });
   }
-
-  // async update(id, data) {
-  //   if (!await this.isValid(data))
-  //     throw new CustomError(JSON.stringify(this.error), 209);
-  //   const user = await prisma.user.update({
-  //     where: {
-  //       id
-  //     },
-  //     data
-  //   })
-  // }
 }
 
 export default User;

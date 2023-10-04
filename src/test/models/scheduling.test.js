@@ -29,8 +29,8 @@ describe ('scheduling', () => {
     
     this.data = {
       description: "Evento XI de Agosto",
-      startAt: "2023-09-30T19:00:00-03:00",
-      endAt: "2023-09-30T20:00:00-03:00",
+      startAt: "2023-09-30T19:00:00",
+      endAt: "2023-09-30T20:00:00",
       userId: user.id,
       locationId: location.id,
     };
@@ -59,8 +59,8 @@ describe ('scheduling', () => {
   it('should not save if description not present', async () => {
     const data = {
       description: "",
-      startAt: "2023-09-30T19:00:00-03:00",
-      endAt: "2023-09-30T20:00:00-03:00",
+      startAt: "2023-09-30T19:00:00",
+      endAt: "2023-09-30T20:00:00",
       userId: user.id,
       locationId: location.id,
     };
@@ -74,7 +74,7 @@ describe ('scheduling', () => {
     const data = {
       description: "Evento XI de Agosto",
       startAt: "",
-      endAt: "2023-09-30T20:00:00-03:00",
+      endAt: "2023-09-30T20:00:00",
       userId: user.id,
       locationId: location.id,
     };
@@ -87,7 +87,7 @@ describe ('scheduling', () => {
   it('should not save if endAt is invalid', async () => {
     const data = {
       description: "Evento XI de Agosto",
-      startAt: "2023-09-30T19:00:00-03:00",
+      startAt: "2023-09-30T19:00:00",
       endAt: "",
       userId: user.id,
       locationId: location.id,
@@ -101,8 +101,8 @@ describe ('scheduling', () => {
   it('should not save if userId not present', async () => {
     const data = {
       description: "Evento XI de Agosto",
-      startAt: "2023-09-30T19:00:00-03:00",
-      endAt: "2023-09-30T20:00:00-03:00",
+      startAt: "2023-09-30T19:00:00",
+      endAt: "2023-09-30T20:00:00",
       userId: '',
       locationId: location.id,
     };
@@ -115,8 +115,8 @@ describe ('scheduling', () => {
   it('should not save if locationId not present', async () => {
     const data = {
       description: "Evento XI de Agosto",
-      startAt: "2023-09-30T19:00:00-03:00",
-      endAt: "2023-09-30T20:00:00-03:00",
+      startAt: "2023-09-30T19:00:00",
+      endAt: "2023-09-30T20:00:00",
       userId: user.id,
       locationId: '',
     };
@@ -129,8 +129,8 @@ describe ('scheduling', () => {
   it('should throw exception if data is invalid', async () => {
     const data = {
       description: "",
-      startAt: "2023-09-30T19:00:00-03:00",
-      endAt: "2023-09-30T20:00:00-03:00",
+      startAt: "2023-09-30T19:00:00",
+      endAt: "2023-09-30T20:00:00",
       userId: user.id,
       locationId: location.id,
     };
@@ -162,5 +162,23 @@ describe ('scheduling', () => {
     const scheduling = await new Scheduling(this.data).create();
     const schedulingRetrieved = await Scheduling.find(scheduling.id);
     expect(schedulingRetrieved.id).toEqual(scheduling.id);
+  }),
+
+  it('should update a scheduling', async () => {
+    const data = { 
+      description: "Evento Arcadas",
+      startAt: "2023-10-01T10:00:00",
+      endAt: "2023-10-01T11:00:00",
+    };
+    const scheduling = await new Scheduling(this.data).create();
+    const schedulingRetrieved = await new Scheduling(data).update(scheduling.id);
+    expect(schedulingRetrieved.description).toEqual("Evento Arcadas");
+    expect(schedulingRetrieved.startAt).toEqual(new Date("2023-10-01T10:00:00"));
+    expect(schedulingRetrieved.endAt).toEqual(new Date("2023-10-01T11:00:00"));
+  }),
+
+  it('should not update if description not present', async () => {
+    const scheduling = await new Scheduling(this.data).create();
+    await expect(() => new Scheduling({ description: "" }).update(scheduling.id)).rejects.toThrowError('Required Description');
   })
 })

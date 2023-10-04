@@ -64,7 +64,7 @@ describe ('location', () => {
     expect(location.error['base']['capacity']['_errors']).toContain('Capacity must be a number');
   }),
 
-  it('should throw exception if data is invalid', async () => {
+  it('should throw exception if name is invalid', async () => {
     const data = {
       name: "",
       capacity: 100
@@ -88,7 +88,6 @@ describe ('location', () => {
   it('should delete a location', async () => {
     const location = await new Location(this.data).create();
     await Location.destroy(location.id);
-
     const locations = await Location.findAll();
     expect(locations.length).toEqual(0);
   }),
@@ -97,5 +96,16 @@ describe ('location', () => {
     const location = await new Location(this.data).create();
     const locationRetrieved = await Location.find(location.id);
     expect(locationRetrieved.id).toEqual(location.id);
+  }),
+
+  it('should update a location', async () => {
+    const location = await new Location(this.data).create();
+    const locationRetrieved = await new Location({ name: "Sala 12" }).update(location.id);
+    expect(locationRetrieved.name).toEqual("Sala 12");
+  }),
+
+  it('should not update if name not present', async () => {
+    const location = await new Location(this.data).create();
+    await expect(() => new Location({ name: "" }).update(location.id)).rejects.toThrowError('Required Name');
   })
 })

@@ -59,6 +59,24 @@ class Location extends Base {
     return this.error.name.length === 0 && 
            this.error.capacity.length === 0
   }
+
+  async isValidUpdate() {
+    const schema = z.object({
+      name: z.string().nonempty('Required Name').optional(),
+      capacity: z.number({
+        invalid_type_error: 'Capacity must be a number',
+      }).int().positive('Capacity must be greater than 0').optional()
+    });
+
+    const result = schema.safeParse(this.data);
+    if (!result.success) {
+      this.error.base = result.error.format();
+      return false;
+    }
+
+    return this.error.name.length === 0 &&
+      this.error.capacity.length === 0
+  }
   async create() {
     if (!await this.isValid())
       throw new CustomError(JSON.stringify(this.error), 209);
@@ -70,6 +88,20 @@ class Location extends Base {
         name,
         capacity,
       }
+    })
+
+    return location;
+  }
+
+  async update(id) {
+    if (!await this.isValidUpdate())
+      throw new CustomError(JSON.stringify(this.error), 209);
+    
+    const location = await prisma.location.update({
+      where: {
+        id
+      },
+      data: this.data
     })
 
     return location;

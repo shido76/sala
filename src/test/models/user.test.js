@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { expect, describe, it, beforeEach, beforeAll } from 'vitest';
+import bcryptjs from 'bcryptjs';
 import User from '../../models/user.js';
 
 const prisma = new PrismaClient();
@@ -170,5 +171,21 @@ describe ('user', () => {
     const user = await new User(this.data).create();
     const userRetrieved = await User.find(user.id);
     expect(userRetrieved.id).toEqual(user.id);
+  }),
+
+  it('should update a user', async () => {
+    const data = {
+      name: "Flávio Camargo",
+      password: "567890",
+    };
+    const user = await new User(this.data).create();
+    const userRetrieved = await new User(data).update(user.id);
+    expect(userRetrieved.name).toEqual("Flávio Camargo");
+    expect(await bcryptjs.compare("567890", userRetrieved.passwordHash)).toBe(true);
+  }),
+
+  it('should not update if name not present', async () => {
+    const user = await new User(this.data).create();
+    await expect(() => new User({ name: "" }).update(user.id)).rejects.toThrowError('Required Name');
   })
 })
