@@ -24,4 +24,4 @@ DATABASE_URL=postgres://postgres:123456@db:5432/sala_test?schema=public
 #MAIL_PASS=your-pass-mail-if-exist
 
 # Sentry
-SENTRY_DSN=https://6a582382ecd04dc69d35b43b27890c9c@o313990.ingest.sentry.io/1788639
+SENTRY_DSN=https://address-sentry
