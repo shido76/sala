@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client';
 import { expect, describe, it, beforeEach, beforeAll } from 'vitest';
+import { prisma } from '../../lib/prisma.js';
 import Scheduling from '../../models/scheduling.js';
 import User from '../../models/user.js';
 import Location from '../../models/location.js';
-
-const prisma = new PrismaClient();
 
 let user;
 let location;

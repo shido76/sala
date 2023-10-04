@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import { expect, describe, it, beforeEach, beforeAll } from 'vitest';
 import bcryptjs from 'bcryptjs';
+import { prisma } from '../../lib/prisma.js';
 import User from '../../models/user.js';
-
-const prisma = new PrismaClient();
 
 describe ('user', () => {
   beforeAll(async () => {

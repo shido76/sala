@@ -1,10 +1,9 @@
 import request from 'supertest';
 import { expect, describe, it, beforeAll } from 'vitest';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../lib/prisma.js';
 import app from '../../app.js';
 import User from '../../models/user.js';
 
-const prisma = new PrismaClient();
 let token;
 
 describe('User controller', () => {

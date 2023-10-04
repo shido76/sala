@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import { expect, describe, it, beforeEach } from 'vitest';
+import { prisma } from '../../lib/prisma.js';
 import Location from '../../models/location.js';
-
-const prisma = new PrismaClient();
 
 describe ('location', () => {
   beforeEach(async () => {

@@ -13,28 +13,21 @@ class Location extends Base {
       capacity: [],
     };
   }
-
+  
   static async findBy(attr, value) {
-    return await prisma.location.findUnique({
-      where: {
-        [attr]: value
-      }
-    })
+    return await Base.findBy(prisma.location, attr, value);
   }
-
-  static async findAll(filter = {}) {
-
-    return await prisma.location.findMany({
-      where: filter,
-      select: {
-        id: true,
-        name: true,
-        capacity: true,
-      },
-      orderBy: {
-        name: 'asc',
-      }
-    });
+  
+  static async findAll(
+    select = {
+      id: true,
+      name: true,
+      capacity: true,
+    },
+    where = {},
+    orderBy = { name: 'asc' }
+  ) {
+    return await Base.findAll(prisma.location, select, where, orderBy)
   }
 
   async isValid() {
@@ -108,19 +101,11 @@ class Location extends Base {
   }
 
   static async destroy(id) {
-    return await prisma.location.delete({
-      where: {
-        id
-      }
-    });
+    return await Base.destroy(prisma.location, id);
   }
 
   static async find(id) {
-    return await prisma.location.findUnique({
-      where: {
-        id
-      }
-    });
+    return await Base.find(prisma.location, id);
   }
 }
 

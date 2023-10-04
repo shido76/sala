@@ -37,21 +37,19 @@ class Scheduling extends Base {
     };
   }
 
-  static async findAll(filter = {}) {
-    return await prisma.scheduling.findMany({
-      where: filter,
-      select: {
-        id: true,
-        description: true,
-        startAt: true,
-        endAt: true,
-        userId: true,
-        locationId: true,
-      },
-      orderBy: {
-        startAt: 'asc',
-      }
-    });
+  static async findAll(
+    select = {
+      id: true,
+      description: true,
+      startAt: true,
+      endAt: true,
+      userId: true,
+      locationId: true,
+    },
+    where = {},
+    orderBy = { startAt: 'desc' }
+  ) {
+    return await Base.findAll(prisma.scheduling, select, where, orderBy)
   }
 
   async isValid() {
@@ -148,19 +146,11 @@ class Scheduling extends Base {
   }
 
   static async destroy(id) {
-    return await prisma.scheduling.delete({
-      where: {
-        id
-      }
-    });
+    return await Base.destroy(prisma.scheduling, id);
   }
 
   static async find(id) {
-    return await prisma.scheduling.findUnique({
-      where: {
-        id
-      }
-    });
+    return await Base.find(prisma.scheduling, id);
   }
 }
 

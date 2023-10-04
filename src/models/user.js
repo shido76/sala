@@ -37,30 +37,23 @@ class User extends Base {
   }
 
   static async findBy(attr, value) {
-    return await prisma.user.findUnique({
-      where: {
-        [attr]: value
-      }
-    })
+    return await Base.findBy(prisma.user, attr, value);
   }
 
-  static async findAll(filter = { active: true }) {
-
-    return await prisma.user.findMany({
-      where: filter,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        numusp: true,
-        phone: true,
-        profiles: true,
-        active: true,
-      },
-      orderBy: {
-        name: 'asc',
-      }
-    });
+  static async findAll(
+    select = {
+      id: true,
+      name: true,
+      email: true,
+      numusp: true,
+      phone: true,
+      profiles: true,
+      active: true,
+    }, 
+    where = { active: true },
+    orderBy = { name: 'asc' }
+  ){
+    return await Base.findAll(prisma.user, select, where, orderBy)
   }
 
   async isValid() {
@@ -150,19 +143,11 @@ class User extends Base {
   }
 
   static async destroy(id) {
-    return await prisma.user.delete({
-      where: {
-        id
-      }
-    });
+    return await Base.destroy(prisma.user, id);
   }
 
   static async find(id) {
-    return await prisma.user.findUnique({
-      where: {
-        id
-      }
-    });
+    return await Base.find(prisma.user, id);
   }
 }
 
