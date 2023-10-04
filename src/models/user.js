@@ -40,7 +40,7 @@ class User extends Base {
     return await Base.findBy(prisma.user, attr, value);
   }
 
-  static async findAll(
+  static async findAll({
     select = {
       id: true,
       name: true,
@@ -52,7 +52,7 @@ class User extends Base {
     }, 
     where = { active: true },
     orderBy = { name: 'asc' }
-  ){
+  } = {}) {
     return await Base.findAll(prisma.user, select, where, orderBy)
   }
 

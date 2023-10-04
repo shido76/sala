@@ -18,7 +18,7 @@ class Location extends Base {
     return await Base.findBy(prisma.location, attr, value);
   }
   
-  static async findAll(
+  static async findAll({
     select = {
       id: true,
       name: true,
@@ -26,7 +26,7 @@ class Location extends Base {
     },
     where = {},
     orderBy = { name: 'asc' }
-  ) {
+  } = {}) {
     return await Base.findAll(prisma.location, select, where, orderBy)
   }
 

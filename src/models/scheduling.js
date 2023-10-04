@@ -37,7 +37,7 @@ class Scheduling extends Base {
     };
   }
 
-  static async findAll(
+  static async findAll({
     select = {
       id: true,
       description: true,
@@ -48,7 +48,7 @@ class Scheduling extends Base {
     },
     where = {},
     orderBy = { startAt: 'desc' }
-  ) {
+  } = {}) {
     return await Base.findAll(prisma.scheduling, select, where, orderBy)
   }
 
