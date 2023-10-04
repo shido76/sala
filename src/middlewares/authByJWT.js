@@ -21,7 +21,7 @@ export default async (req, res, next) => {
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decodedToken.userId;
+    req.userId = decodedToken.id;
     next();
     
   } catch (err) {
