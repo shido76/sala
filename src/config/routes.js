@@ -1,4 +1,5 @@
 import Router from 'express';
+import SiteController from '../controllers/site.js';
 import UsersController from '../controllers/users.js';
 import UserSessionsController from '../controllers/userSessions.js';
 import LocationsController from '../controllers/locations.js';
@@ -7,6 +8,8 @@ import AuthMiddleware from '../middlewares/authByJWT.js';
 
 const routes = new Router();
 routes.use(AuthMiddleware);
+
+routes.get('/', SiteController.index);
 
 routes.get('/users', UsersController.index);
 routes.post('/users', UsersController.create);
