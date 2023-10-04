@@ -3,13 +3,18 @@ Gerenciamento de Salas, Anfiteatros, etc
 
 ## Production
 
-PM2 + Docker
+Use PM2 + Docker
 
-# install prisma cliente
-npx prisma generate
+## Development
 
-# migrate db
-npx prisma migrate dev
+### init api
+- docker-compose up
 
-# view db
-npx prisma studio
+#### install prisma cliente
+- npx prisma generate
+
+#### migrate db
+- npx prisma migrate dev
+
+#### view db
+- npx prisma studio
