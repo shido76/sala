@@ -30,5 +30,6 @@ routes.put('/schedulings/:id', SchedulingsController.update);
 routes.delete('/schedulings/:id', SchedulingsController.destroy);
 
 routes.post('/session', UserSessionsController.create);
+routes.post('/session/renovate', UserSessionsController.update);
 
 export default routes;

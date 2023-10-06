@@ -52,5 +52,19 @@ describe('user session', () => {
     const userSession = await new UserSession('', this.data['password']);
     const token = await userSession.authenticate();
     expect(token).toBeFalsy();
+  }),
+
+  it('should retrieve refresh token', async () => {
+    const userSession = await new UserSession(this.data['email'], this.data['password']);
+    const token = await userSession.authenticate();
+    const refreshToken = token[1];
+
+    const renovatedToken = userSession.renovate(refreshToken);
+    expect(renovatedToken.length).toEqual(2);
+  }),
+
+  it('should not retrieve refresh token if token is invalid', async () => {
+    const userSession = await new UserSession(this.data['email'], this.data['password']);
+    expect(userSession.renovate('fake')).toBeFalsy();
   })
 })

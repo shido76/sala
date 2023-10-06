@@ -28,7 +28,7 @@ describe('User controller', () => {
     const response = await request(app)
       .post('/session')
       .send({ email: 'fdescartes@gmail.com', password: '123456' });
-    token = response.body.token;
+    token = response.body.accessToken;
 
     return async () => {
       await prisma.$transaction([

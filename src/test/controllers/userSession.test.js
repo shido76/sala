@@ -29,7 +29,7 @@ describe('UserSession controller', () => {
       .send({
         email: 'fdescartes@gmail.com',
         password: '123456'
-      })
+      });
     expect(response.status).toBe(200);
   }),
 
@@ -38,8 +38,33 @@ describe('UserSession controller', () => {
       .post('/session')
       .send({
         email: 'fdescartes@gmail.com',
-        password: '1234567'
+        password: '1234567890'
       })
     expect(response.status).toBe(401);
+  }),
+
+  it('should renovate with success', async () => {
+    const authResponse = await request(app)
+      .post('/session')
+      .send({
+        email: 'fdescartes@gmail.com',
+        password: '123456'
+      });
+
+    const cookie = authResponse.get('Set-Cookie')
+    const response = await request(app)
+      .post('/session/renovate')
+      .set('Cookie', cookie)
+      .send() 
+      
+    expect(response.status).toBe(200);
+  }),
+
+  it('should not renovate with if cookie is invalid', async () => {
+    const response = await request(app)
+      .post('/session/renovate')
+      .set('Cookie', 'invalid')
+      .send()
+    expect(response.status).toBe(406);
   })
 })

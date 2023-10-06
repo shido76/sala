@@ -6,6 +6,7 @@ export default async (req, res, next) => {
 
   const whiteListURL = [
     '/session',
+    '/session/renovate',
     '/',
   ]
 
@@ -21,7 +22,7 @@ export default async (req, res, next) => {
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decodedToken.id;
+    req.userId = decodedToken.sub;
     next();
     
   } catch (err) {

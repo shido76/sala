@@ -1,5 +1,19 @@
 import CustomError from '../lib/customError.js';
 
+const prodErrors = (res, err) => {
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      status: err.statusCode,
+      message: err.message
+    });
+  } else {
+    res.status(500).json({
+      status: 'error',
+      message: 'Something went wrong! Please try again later.'
+    })
+  }
+}
+
 const devErrors = (res, err) => {
   res.status(err.statusCode).json({
     status: err.statusCode,
@@ -29,18 +43,9 @@ const validationErrorHandler = err => {
   return new CustomError(msg, 400);
 }
 
-const prodErrors = (res, err) => {
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.statusCode,
-      message: err.message
-    });
-  } else {
-    res.status(500).json({
-      status: 'error',
-      message: 'Something went wrong! Please try again later.'
-    })
-  }
+const tokenExpiredtErrorHandler = err => {
+  const msg = `Token expired! Please login!`
+  return new CustomError(msg, 401);
 }
 
 class ErrorsController {
@@ -49,12 +54,12 @@ class ErrorsController {
     err.status ||= 'error';
 
     if (process.env.NODE_ENV !== 'production') {
+      if (err.message === 'TokenExpiredError: jwt expired') err = tokenExpiredtErrorHandler(err);
       devErrors(res, err);
     } else if (process.env.NODE_ENV === 'production') {
       if (err.name === 'CastError') err = castErrorHandler(err);
       if (err.code === 11000) err = duplicateKeyErrorHandler(err);
       if (err.name === 'ValidationError') err = validationErrorHandler(err);
-
       prodErrors(res, err);
     }
   }
