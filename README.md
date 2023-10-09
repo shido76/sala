@@ -18,3 +18,6 @@ Use PM2 + Docker
 
 #### view db
 - npx prisma studio
+
+#### seed db
+- npx prisma db seed

@@ -4,6 +4,9 @@
   "description": "",
   "main": "server.js",
   "type": "module",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "test:unit": "vitest run --no-threads --dir ./src/test/models",
     "test:integration": "vitest run --no-threads --dir ./src/test/controllers",
