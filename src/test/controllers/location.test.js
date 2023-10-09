@@ -10,18 +10,19 @@ let token;
 describe('Location controller', () => {
   beforeAll(async () => {
     const data = {
-      email: "fdescartes@gmail.com",
+      email: "fdescartes@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678",
+      profiles: ['admin', 'manager', 'user'],
     };
     await new User(data).create();
     this.location = await new Location({ name: "Teste I", capacity: 100 }).create();
 
     const response = await request(app)
       .post('/session')
-      .send({ email: 'fdescartes@gmail.com', password: '123456' });
+      .send({ email: 'fdescartes@test.com', password: '123456' });
     token = response.body.accessToken;
 
     return async () => {

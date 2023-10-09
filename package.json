@@ -10,6 +10,7 @@
   "scripts": {
     "test:unit": "vitest run --no-threads --dir ./src/test/models",
     "test:integration": "vitest run --no-threads --dir ./src/test/controllers",
+    "test:policy": "vitest run --no-threads --dir ./src/test/policies",
     "test:coverage": "vitest run --no-threads --coverage",
     "dev": "node --watch src/server.js",
     "prod": "pm2-runtime src/server.js"
@@ -27,6 +28,7 @@
     "express-requests-logger": "^4.0.0",
     "jsonwebtoken": "^9.0.2",
     "path": "^0.12.7",
+    "pundit": "^0.3.0",
     "zod": "^3.22.2"
   },
   "devDependencies": {

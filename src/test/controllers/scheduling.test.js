@@ -12,11 +12,12 @@ let dataScheduling;
 describe('Scheduling controller', () => {
   beforeAll(async () => {
     const userData = {
-      email: "fdescartes@gmail.com",
+      email: "fdescartes@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678",
+      profiles: ['admin', 'manager', 'user'],
     };
 
     const locationData = {
@@ -39,7 +40,7 @@ describe('Scheduling controller', () => {
 
     const response = await request(app)
       .post('/session')
-      .send({ email: 'fdescartes@gmail.com', password: '123456' });
+      .send({ email: 'fdescartes@test.com', password: '123456' });
     token = response.body.accessToken;
 
     return async () => {

@@ -6,11 +6,11 @@ import User from '../../models/user.js';
 describe('user auth db', () => {
   beforeAll(async () => {
     this.data = {
-      email: "fdescartes@gmail.com",
+      email: "fdescartes@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     };
 
     const user = new User(this.data);
@@ -41,11 +41,11 @@ describe('user auth db', () => {
 
   it('should not return user if is inactive', async () => {
     const data = {
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "52655651",
-      phone: "(11) 98030-9205",
+      phone: "(11) 91234-5678",
       active: false
     };
 

@@ -7,11 +7,12 @@ import User from '../../models/user.js';
 describe('UserSession controller', () => {
   beforeAll(async () => {
     const data = {
-      email: "fdescartes@gmail.com",
+      email: "fdescartes@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678",
+      profiles: ['admin', 'manager', 'user'],
     };
     await new User(data).create();
 
@@ -27,7 +28,7 @@ describe('UserSession controller', () => {
     const response = await request(app)
       .post('/session')
       .send({
-        email: 'fdescartes@gmail.com',
+        email: 'fdescartes@test.com',
         password: '123456'
       });
     expect(response.status).toBe(200);
@@ -37,7 +38,7 @@ describe('UserSession controller', () => {
     const response = await request(app)
       .post('/session')
       .send({
-        email: 'fdescartes@gmail.com',
+        email: 'fdescartes@test.com',
         password: '1234567890'
       })
     expect(response.status).toBe(401);
@@ -47,7 +48,7 @@ describe('UserSession controller', () => {
     const authResponse = await request(app)
       .post('/session')
       .send({
-        email: 'fdescartes@gmail.com',
+        email: 'fdescartes@test.com',
         password: '123456'
       });
 

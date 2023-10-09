@@ -9,25 +9,26 @@ let token;
 describe('User controller', () => {
   beforeAll(async () => {
     const data = {
-      email: "fdescartes@gmail.com",
+      email: "fdescartes@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678",
+      profiles: ['admin', 'manager', 'user'],
     };
     await new User(data).create();
     
     this.user = await new User({
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "123456",
       name: "Antonio XX",
       numusp: "52655651",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }).create();
 
     const response = await request(app)
       .post('/session')
-      .send({ email: 'fdescartes@gmail.com', password: '123456' });
+      .send({ email: 'fdescartes@test.com', password: '123456' });
     token = response.body.accessToken;
 
     return async () => {
@@ -73,7 +74,7 @@ describe('User controller', () => {
       password: "123456",
       name: "Teste",
       numusp: "52655652",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     };
 
     const response = await request(app)
@@ -86,11 +87,11 @@ describe('User controller', () => {
 
   it('CREATE - should not create user if user already exists', async () => {
     const data = {
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "52655651",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     };
 
     const response = await request(app)
@@ -110,11 +111,11 @@ describe('User controller', () => {
 
   it('UPDATE - should update user', async () => {
     const data = {
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "123456",
       name: "Antonio XX",
       numusp: "52655651",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     };
     const response = await request(app)
       .put(`/users/${this.user.id}`)
@@ -138,7 +139,7 @@ describe('User controller', () => {
       password: "123456",
       name: "Teste User",
       numusp: "123456",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     };
     const user = await new User(data).create();
     const response = await request(app)

@@ -112,7 +112,7 @@ class User extends Base {
     if (!await this.isValid())
       throw new CustomError(JSON.stringify(this.error), 209);
 
-    const { email, passwordHash, name, numusp, phone, active } = await prepareDataCreate(this.data);
+    const { email, passwordHash, name, numusp, phone, profiles, active } = await prepareDataCreate(this.data);
 
     const user = await prisma.user.create({
       data: {
@@ -121,6 +121,7 @@ class User extends Base {
         name,
         numusp,
         phone,
+        profiles,
         active,
       }
     })

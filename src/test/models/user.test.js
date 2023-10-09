@@ -18,7 +18,7 @@ describe ('user', () => {
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     };
 
     await prisma.$transaction([
@@ -39,7 +39,7 @@ describe ('user', () => {
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }
 
     const user = new User(data);
@@ -53,7 +53,7 @@ describe ('user', () => {
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }
 
     const user = new User(data);
@@ -71,11 +71,11 @@ describe ('user', () => {
 
   it('should not save if password not present', async () => {
     const data = {
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }
 
     const user = new User(data);
@@ -85,11 +85,11 @@ describe ('user', () => {
 
   it('should not save if password length is less than 6', async () => {
     const data = {
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "123",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }
 
     const user = new User(data);
@@ -99,11 +99,11 @@ describe ('user', () => {
 
   it('should not save if name not present', async () => {
     const data = {
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "123456",
       name: "",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }
 
     const user = new User(data);
@@ -113,11 +113,11 @@ describe ('user', () => {
 
   it('should not save if numusp not present', async () => {
     const data = {
-      email: "fjs@usp.br",
+      email: "fjs@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }
 
     const user = new User(data);
@@ -139,7 +139,7 @@ describe ('user', () => {
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     }
 
     const user = new User(data);

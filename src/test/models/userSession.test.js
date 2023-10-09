@@ -6,11 +6,11 @@ import UserSession from '../../models/userSession.js';
 describe('user session', () => {
   beforeAll(async () => {
     this.data = {
-      email: "fdescartes@gmail.com",
+      email: "fdescartes@test.com",
       password: "123456",
       name: "Fábio José da Silva",
       numusp: "5265565",
-      phone: "(11) 98030-9205"
+      phone: "(11) 91234-5678"
     };
 
     const user = new User(this.data);
