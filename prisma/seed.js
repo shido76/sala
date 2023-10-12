@@ -87,7 +87,7 @@ async function main() {
     },
   })
 
-  console.log([scheduling1, scheduling2])
+  console.table([scheduling1, scheduling2])
 }
 
 // npx prisma db seed

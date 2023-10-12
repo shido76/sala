@@ -32,7 +32,7 @@ describe('Location controller', () => {
       ]);
       await prisma.$disconnect();
     }
-  })
+  }),
 
   it('INDEX - should list locations', async () => {
     const response = await request(app)
