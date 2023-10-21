@@ -49,7 +49,7 @@ class Scheduling extends Base {
     where = {},
     orderBy = { startAt: 'desc' }
   } = {}) {
-    return await Base.findAll(prisma.scheduling, select, where, orderBy)
+    return await super.findAll(prisma.scheduling, select, where, orderBy)
   }
 
   async isValid() {
@@ -146,11 +146,11 @@ class Scheduling extends Base {
   }
 
   static async destroy(id) {
-    return await Base.destroy(prisma.scheduling, id);
+    return await super.destroy(prisma.scheduling, id);
   }
 
   static async find(id) {
-    return await Base.find(prisma.scheduling, id);
+    return await super.find(prisma.scheduling, id);
   }
 }
 

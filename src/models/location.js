@@ -15,7 +15,7 @@ class Location extends Base {
   }
   
   static async findBy(attr, value) {
-    return await Base.findBy(prisma.location, attr, value);
+    return await super.findBy(prisma.location, attr, value);
   }
   
   static async findAll({
@@ -27,7 +27,7 @@ class Location extends Base {
     where = {},
     orderBy = { name: 'asc' }
   } = {}) {
-    return await Base.findAll(prisma.location, select, where, orderBy)
+    return await super.findAll(prisma.location, select, where, orderBy)
   }
 
   async isValid() {
@@ -101,11 +101,11 @@ class Location extends Base {
   }
 
   static async destroy(id) {
-    return await Base.destroy(prisma.location, id);
+    return await super.destroy(prisma.location, id);
   }
 
   static async find(id) {
-    return await Base.find(prisma.location, id);
+    return await super.find(prisma.location, id);
   }
 }
 

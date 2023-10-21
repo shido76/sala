@@ -37,7 +37,7 @@ class User extends Base {
   }
 
   static async findBy(attr, value) {
-    return await Base.findBy(prisma.user, attr, value);
+    return await super.findBy(prisma.user, attr, value);
   }
 
   static async findAll({
@@ -53,7 +53,7 @@ class User extends Base {
     where = { active: true },
     orderBy = { name: 'asc' }
   } = {}) {
-    return await Base.findAll(prisma.user, select, where, orderBy)
+    return await super.findAll(prisma.user, select, where, orderBy)
   }
 
   async isValid() {
@@ -144,11 +144,11 @@ class User extends Base {
   }
 
   static async destroy(id) {
-    return await Base.destroy(prisma.user, id);
+    return await super.destroy(prisma.user, id);
   }
 
   static async find(id) {
-    return await Base.find(prisma.user, id);
+    return await super.find(prisma.user, id);
   }
 }
 
